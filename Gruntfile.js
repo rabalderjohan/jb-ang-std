@@ -8,7 +8,6 @@ module.exports = function(grunt) {
 
 
 	var npmDependencies = require('./package.json').devDependencies;
-	var hasLess = npmDependencies['grunt-contrib-less'] !== undefined;
 
 	grunt.initConfig({
 
@@ -16,7 +15,7 @@ module.exports = function(grunt) {
 		watch : {
 			less : {
 				files : ['less/**/*.less'],
-				tasks : (hasLess) ? ['less:dev'] : null,
+				tasks : ['less:dev'],
 				options : {
 					livereload : true
 				}
@@ -55,53 +54,11 @@ module.exports = function(grunt) {
 		},
 
 		// Dev and production build for less
-		less : {
-			production : {
-				files : [
-					{
-						src : ['**/*.less', '!**/_*.less'],
-						cwd : 'scss',
-						dest : 'css',
-						ext : '.css',
-						expand : true
-					}
-				],
-				options : {
-					style : 'compressed'
-				}
-			},
-			dev : {
-				files : [
-					{
-						src : ['**/*.less', '!**/_*.less'],
-						cwd : 'scss',
-						dest : 'css',
-						ext : '.css',
-						expand : true
-					}
-				],
-				options : {
-					style : 'expanded'
-				}
-			}
-		},
 
 		// Bower task sets up require config
 		bower : {
 			all : {
 				rjsConfig : 'js/global.js'
-			}
-		},
-
-		// Require config
-		requirejs : {
-			production : {
-				options : {
-					name : 'global',
-					baseUrl : 'js',
-					mainConfigFile : 'js/global.js',
-					out : 'js/optimized.min.js'
-				}
 			}
 		},
 
@@ -133,6 +90,29 @@ module.exports = function(grunt) {
 			}
 		}
 
+		//LESS
+		less: {
+			development: {
+				options: {
+					compress: true,
+					yuicompress: true,
+					optimization: 2
+				},
+				files: {
+					"css/main.css": "less/main.less"
+				}
+			},
+			production: {
+				options: {
+					compress: true,
+					yuicompress: true,
+					optimization: 2
+				},
+				files: {
+					"css/main.css": "less/main.less"
+				}
+			}
+		}
 	});
 
 	// Default task
@@ -142,11 +122,7 @@ module.exports = function(grunt) {
 	grunt.registerTask('build', function() {
 		var arr = ['jshint'];
 
-		if (hasLess) {
-			arr.push('less:production');
-		}
-
-		arr.push('imagemin:production', 'svgmin:production', 'requirejs:production');
+		arr.push('less:production', 'imagemin:production', 'svgmin:production');
 
 		return arr;
 	});
@@ -163,14 +139,10 @@ module.exports = function(grunt) {
 	});
 
 	// Load up tasks
-	if (hasLess) {
-		grunt.loadNpmTasks('grunt-contrib-less');
-	}
 
+	grunt.loadNpmTasks('grunt-contrib-less');
 	grunt.loadNpmTasks('grunt-contrib-jshint');
 	grunt.loadNpmTasks('grunt-contrib-watch');
-	grunt.loadNpmTasks('grunt-bower-requirejs');
-	grunt.loadNpmTasks('grunt-contrib-requirejs');
 	grunt.loadNpmTasks('grunt-contrib-imagemin');
 	grunt.loadNpmTasks('grunt-svgmin');
 
