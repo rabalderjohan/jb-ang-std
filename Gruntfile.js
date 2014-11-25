@@ -15,7 +15,7 @@ module.exports = function(grunt) {
 		watch : {
 			less : {
 				files : ['less/**/*.less'],
-				tasks : ['less:dev'],
+				tasks : ['less:development'],
 				options : {
 					livereload : true
 				}
@@ -88,7 +88,7 @@ module.exports = function(grunt) {
 					}
 				]
 			}
-		}
+		},
 
 		//LESS
 		less: {
@@ -131,9 +131,7 @@ module.exports = function(grunt) {
 	grunt.registerTask('setup', function() {
 		var arr = [];
 
-		if (hasLess) {
-			arr.push['less:dev'];
-		}
+		arr.push['less:development'];
 
 		arr.push('bower-install');
 	});
